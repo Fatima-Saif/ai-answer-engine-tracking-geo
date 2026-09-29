@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Answer Engine Tracking (GEO)</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <!-- Google Fonts: Outfit -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chart.js -->
@@ -16,35 +17,63 @@
         <!-- Sidebar Navigation -->
         <aside class="sidebar" id="app-sidebar">
             <div class="brand">
-                <span class="logo-icon">▲</span>
+                <span class="logo-icon">
+                    <svg class="brand-svg" viewBox="0 0 28 28" fill="none" width="26" height="26">
+                        <path d="M14 2L3 8L14 26L25 8L14 2Z" stroke="url(#ff-grad)" stroke-width="2.2" stroke-linejoin="round"/>
+                        <path d="M14 6L7 10L14 21L21 10L14 6Z" fill="url(#ff-glow)" fill-opacity="0.3"/>
+                        <circle cx="14" cy="13" r="2" fill="#38bdf8"/>
+                        <defs>
+                            <linearGradient id="ff-grad" x1="3" y1="2" x2="25" y2="26" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#6366f1"/>
+                                <stop offset="0.5" stop-color="#38bdf8"/>
+                                <stop offset="1" stop-color="#10b981"/>
+                            </linearGradient>
+                            <linearGradient id="ff-glow" x1="7" y1="6" x2="21" y2="21" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#818cf8"/>
+                                <stop offset="1" stop-color="#34d399"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </span>
                 <div class="brand-text">
                     <h2>AI Answer Engine Tracking (GEO)</h2>
                 </div>
             </div>
             <nav class="nav-links">
                 <a href="#dashboard" class="nav-item active" onclick="switchTab('dashboard'); toggleSidebar(false);">
-                    <span class="nav-icon">📊</span> Dashboard
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"></rect><rect x="14" y="3" width="7" height="5" rx="1"></rect><rect x="14" y="12" width="7" height="9" rx="1"></rect><rect x="3" y="16" width="7" height="5" rx="1"></rect></svg>
+                    </span>
+                    Dashboard
                 </a>
                 <a href="#prompts" class="nav-item" onclick="switchTab('prompts'); toggleSidebar(false);">
-                    <span class="nav-icon">🔑</span> Prompts Matrix
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+                    </span>
+                    Prompts Matrix
                 </a>
                 <a href="#citations" class="nav-item" onclick="switchTab('citations'); toggleSidebar(false);">
-                    <span class="nav-icon">🔗</span> Citation Audit
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                    </span>
+                    Citation Audit
                 </a>
                 <a href="#settings" class="nav-item" onclick="switchTab('settings'); toggleSidebar(false);">
-                    <span class="nav-icon">⚙️</span> Settings
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    </span>
+                    Settings
                 </a>
             </nav>
             <div class="sidebar-footer">
-                <div class="target-config">
-                    <p class="config-label">Target Brand</p>
-                    <p class="config-value" id="target-brand-name">FalconFace</p>
-                    <p class="config-label mt-2">Target Domain</p>
-                    <p class="config-value" id="target-domain-name">falconface.ai</p>
-                </div>
                 <div class="powered-by-badge">
                     <span class="powered-text">Powered by</span>
-                    <span class="powered-brand">🦅 FalconFace</span>
+                    <span class="powered-brand">
+                        <svg class="powered-icon-svg" viewBox="0 0 16 16" fill="none" width="13" height="13">
+                            <polygon points="8,1 15,15 1,15" stroke="#818cf8" stroke-width="1.8" fill="rgba(99, 102, 241, 0.25)" stroke-linejoin="round"/>
+                        </svg>
+                        FalconFace
+                    </span>
                 </div>
             </div>
         </aside>
@@ -54,7 +83,13 @@
             <!-- Header -->
             <header class="app-header">
                 <div class="header-left">
-                    <button class="mobile-toggle-btn" onclick="toggleSidebar(true)" aria-label="Toggle Navigation">☰</button>
+                    <button class="mobile-toggle-btn" onclick="toggleSidebar(true)" aria-label="Toggle Navigation">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
                     <div class="header-title">
                         <h1 id="page-title">AI Answer Engine Tracking (GEO)</h1>
                         <p class="subtitle">Track Your Brand. Measure AI Visibility. Understand Every Citation. • <span class="header-powered">Powered by FalconFace</span></p>
@@ -62,7 +97,12 @@
                 </div>
                 <div class="header-actions">
                     <button class="btn btn-primary" id="btn-refresh" onclick="refreshData()">
-                        <span class="btn-icon">🔄</span> Refresh Data
+                        <span class="btn-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                                <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"></path>
+                            </svg>
+                        </span>
+                        Refresh Data
                     </button>
                 </div>
             </header>
@@ -74,7 +114,9 @@
                     <div class="metric-card">
                         <div class="metric-header">
                             <span class="metric-label">Monitored Prompts</span>
-                            <span class="metric-icon">🔍</span>
+                            <span class="metric-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            </span>
                         </div>
                         <div class="metric-value" id="metric-total-prompts">0</div>
                         <p class="metric-footer">Across all target search intent profiles</p>
@@ -82,7 +124,9 @@
                     <div class="metric-card highlight">
                         <div class="metric-header">
                             <span class="metric-label">Brand Share of Voice</span>
-                            <span class="metric-icon">📢</span>
+                            <span class="metric-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                            </span>
                         </div>
                         <div class="metric-value"><span id="metric-sov">0</span>%</div>
                         <p class="metric-footer">Total engine citation index mentions</p>
@@ -90,7 +134,9 @@
                     <div class="metric-card">
                         <div class="metric-header">
                             <span class="metric-label">Citations Captured</span>
-                            <span class="metric-icon">🔗</span>
+                            <span class="metric-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                            </span>
                         </div>
                         <div class="metric-value" id="metric-citations">0</div>
                         <p class="metric-footer">Extracted reference hyperlinks</p>
@@ -98,7 +144,9 @@
                     <div class="metric-card warning">
                         <div class="metric-header">
                             <span class="metric-label">Visibility Gap Index</span>
-                            <span class="metric-icon">⚠️</span>
+                            <span class="metric-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                            </span>
                         </div>
                         <div class="metric-value"><span id="metric-gap">0</span>%</div>
                         <p class="metric-footer">Missing engine visibility market share</p>

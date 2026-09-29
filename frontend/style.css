@@ -1,14 +1,21 @@
-/* Premium Dark Slate Dashboard CSS Theme */
+/* Modern Dark Slate & Obsidian Theme for FalconFace GEO */
 :root {
-    --bg-main: #0f172a;       /* Slate 900 */
-    --bg-card: #1e293b;       /* Slate 800 */
-    --bg-border: #334155;     /* Slate 700 */
-    --accent-indigo: #6366f1; /* Indigo 500 */
-    --accent-emerald: #10b981;/* Emerald 500 */
-    --accent-warning: #f59e0b;/* Amber 500 */
-    --text-primary: #f8fafc;  /* Slate 50 */
-    --text-secondary: #94a3b8;/* Slate 400 */
-    --font-stack: 'Outfit', sans-serif;
+    --bg-main: #090d16;          /* Deep Obsidian */
+    --bg-card: #0f172a;          /* Slate 900 */
+    --bg-card-hover: #141f36;    /* Interactive card hover */
+    --bg-border: #1e293b;        /* Crisp Slate 800 */
+    --bg-border-light: #334155;  /* Hover border */
+    --accent-indigo: #6366f1;    /* Vibrant Indigo */
+    --accent-indigo-glow: rgba(99, 102, 241, 0.2);
+    --accent-emerald: #10b981;   /* Emerald */
+    --accent-emerald-glow: rgba(16, 185, 129, 0.15);
+    --accent-cyan: #38bdf8;      /* Sky Cyan */
+    --accent-warning: #f59e0b;   /* Amber */
+    --text-primary: #f8fafc;     /* Slate 50 */
+    --text-secondary: #94a3b8;   /* Slate 400 */
+    --text-muted: #64748b;       /* Slate 500 */
+    --font-stack: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
 }
 
 * {
@@ -19,6 +26,10 @@
 
 body {
     background-color: var(--bg-main);
+    background-image: 
+        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.04) 0%, transparent 40%);
+    background-attachment: fixed;
     color: var(--text-primary);
     font-family: var(--font-stack);
     min-height: 100vh;
@@ -40,12 +51,13 @@ body {
     padding: 2rem 1.5rem;
     position: fixed;
     height: 100vh;
+    z-index: 50;
 }
 
 .brand {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.85rem;
     margin-bottom: 2.5rem;
 }
 
@@ -55,23 +67,21 @@ body {
 }
 
 .logo-icon {
-    font-size: 1.6rem;
-    color: var(--accent-indigo);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.brand-svg {
+    filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.4));
 }
 
 .brand h2 {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     font-weight: 700;
     letter-spacing: -0.025em;
     color: var(--text-primary);
-}
-
-.brand-tag {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--accent-indigo);
-    font-weight: 600;
+    line-height: 1.3;
 }
 
 .header-left {
@@ -86,9 +96,14 @@ body {
     border: 1px solid var(--bg-border);
     color: var(--text-primary);
     font-size: 1.25rem;
-    padding: 0.4rem 0.75rem;
+    padding: 0.5rem;
     border-radius: 8px;
     cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.mobile-toggle-btn:hover {
+    border-color: var(--accent-indigo);
 }
 
 .sidebar-backdrop {
@@ -98,8 +113,8 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(4px);
+    background: rgba(9, 13, 22, 0.8);
+    backdrop-filter: blur(6px);
     z-index: 99;
 }
 
@@ -113,53 +128,60 @@ body {
 .nav-item {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.85rem;
     padding: 0.85rem 1rem;
     color: var(--text-secondary);
     text-decoration: none;
     font-weight: 500;
     border-radius: 8px;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent;
 }
 
-.nav-item:hover, .nav-item.active {
+.nav-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    color: var(--text-secondary);
+    transition: color 0.2s ease;
+}
+
+.nav-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.nav-item:hover {
     color: var(--text-primary);
-    background-color: rgba(99, 102, 241, 0.15);
+    background-color: rgba(99, 102, 241, 0.08);
+    border-color: rgba(99, 102, 241, 0.15);
+}
+
+.nav-item:hover .nav-icon {
+    color: var(--accent-indigo);
+}
+
+.nav-item.active {
+    color: #fff;
+    background: linear-gradient(90deg, rgba(99, 102, 241, 0.18) 0%, rgba(99, 102, 241, 0.06) 100%);
+    border-color: rgba(99, 102, 241, 0.3);
     box-shadow: inset 3px 0 0 var(--accent-indigo);
+}
+
+.nav-item.active .nav-icon {
+    color: #818cf8;
 }
 
 .sidebar-footer {
     margin-top: auto;
-}
-
-.target-config {
-    background-color: rgba(15, 23, 42, 0.5);
-    padding: 1rem;
-    border-radius: 8px;
-    border: 1px solid var(--bg-border);
-}
-
-.config-label {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.config-value {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-.mt-2 {
-    margin-top: 0.5rem;
+    padding-top: 1rem;
 }
 
 /* Powered by FalconFace Badge */
 .powered-by-badge {
-    margin-top: 1rem;
-    padding: 0.65rem 0.85rem;
+    padding: 0.75rem 0.95rem;
     background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(16, 185, 129, 0.08));
     border: 1px solid rgba(99, 102, 241, 0.3);
     border-radius: 8px;
@@ -218,15 +240,27 @@ body {
 .btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
+    gap: 0.6rem;
+    padding: 0.75rem 1.4rem;
     font-family: var(--font-stack);
     font-weight: 600;
     font-size: 0.9rem;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
 }
 
 .btn-primary {
@@ -299,15 +333,27 @@ body {
     border-radius: 12px;
     position: relative;
     overflow: hidden;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.metric-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--bg-border-light);
+    box-shadow: var(--shadow-card);
 }
 
 .metric-card.highlight {
-    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(99, 102, 241, 0.1) 100%);
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(99, 102, 241, 0.12) 100%);
+    border-color: rgba(99, 102, 241, 0.4);
+}
+
+.metric-card.highlight:hover {
     border-color: var(--accent-indigo);
+    box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.3);
 }
 
 .metric-card.warning {
-    border-color: var(--accent-warning);
+    border-color: rgba(245, 158, 11, 0.35);
 }
 
 .metric-header {
@@ -319,14 +365,37 @@ body {
 
 .metric-label {
     color: var(--text-secondary);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
     font-weight: 600;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
 }
 
 .metric-icon {
-    font-size: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(99, 102, 241, 0.1);
+    color: #818cf8;
+}
+
+.metric-card.highlight .metric-icon {
+    background: rgba(16, 185, 129, 0.12);
+    color: #34d399;
+}
+
+.metric-card.warning .metric-icon {
+    background: rgba(245, 158, 11, 0.12);
+    color: #fbbf24;
+}
+
+.metric-icon svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
 }
 
 .metric-value {
@@ -573,6 +642,29 @@ td {
 
 .toast.toast-info {
     border-left: 4px solid var(--accent-indigo);
+}
+
+.toast-icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.toast-svg {
+    display: block;
+}
+
+.toast.toast-success .toast-icon-wrap {
+    color: var(--accent-emerald);
+}
+
+.toast.toast-error .toast-icon-wrap {
+    color: #ef4444;
+}
+
+.toast.toast-info .toast-icon-wrap {
+    color: var(--accent-cyan);
 }
 
 @keyframes toastSlideIn {
