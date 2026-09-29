@@ -3,6 +3,33 @@ let currentTab = "dashboard";
 let globalData = null;
 let chartInstance = null;
 
+// Theme Toggle & State Management (Default: Light Mode with pure white background)
+function initTheme() {
+    const savedTheme = localStorage.getItem("geo_theme_v3") || "light";
+    applyTheme(savedTheme, false);
+}
+
+function applyTheme(theme, shouldRerenderChart = true) {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("geo_theme_v3", theme);
+
+    const toggleText = document.getElementById("theme-toggle-text");
+    if (toggleText) {
+        toggleText.textContent = theme === "dark" ? "Light Mode" : "Dark Mode";
+    }
+
+    if (shouldRerenderChart && globalData && globalData.time_series) {
+        renderCharts(globalData.time_series);
+    }
+}
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
+    const nextTheme = currentTheme === "dark" ? "light" : "dark";
+    applyTheme(nextTheme, true);
+    showToast(`Switched to ${nextTheme === "dark" ? "Dark Mode" : "Light Mode"}`, "info");
+}
+
 // Non-blocking Toast Notification Helper
 function showToast(message, type = "info") {
     const container = document.getElementById("toast-container");
@@ -73,10 +100,10 @@ function switchTab(tabId) {
 
     // Set page header title
     const titles = {
-        dashboard: "AI Answer Engine Tracking (GEO) — Dashboard",
-        prompts: "AI Answer Engine Tracking (GEO) — Prompts Matrix",
+        dashboard: "AI Answer Engine Tracking (GEO) — Overview",
+        prompts: "AI Answer Engine Tracking (GEO) — Tracked Queries",
         citations: "AI Answer Engine Tracking (GEO) — Citation Audit",
-        settings: "AI Answer Engine Tracking (GEO) — Settings"
+        settings: "AI Answer Engine Tracking (GEO) — Project Settings"
     };
     const titleEl = document.getElementById("page-title");
     if (titleEl) {
@@ -132,8 +159,27 @@ function renderCharts(timeSeries) {
         chartInstance.destroy();
     }
 
+    const isLight = document.documentElement.getAttribute("data-theme") === "light";
     const labels = (timeSeries || []).map(item => item.date);
     const datasetData = (timeSeries || []).map(item => item.sov);
+
+    const lineColor = isLight ? '#790D16' : '#E5D3AF';
+    const pointBg = isLight ? '#FFFFFF' : '#790D16';
+    const pointBorder = isLight ? '#790D16' : '#E5D3AF';
+    const gridColor = isLight ? 'rgba(229, 211, 175, 0.45)' : 'rgba(255, 255, 255, 0.07)';
+    const ticksColor = isLight ? '#5C4A4D' : '#AEC4D4';
+
+    // Rich luxury vertical gradient fill
+    const gradient = ctx.createLinearGradient(0, 0, 0, 320);
+    if (isLight) {
+        gradient.addColorStop(0, 'rgba(121, 13, 22, 0.28)');
+        gradient.addColorStop(0.55, 'rgba(229, 211, 175, 0.16)');
+        gradient.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
+    } else {
+        gradient.addColorStop(0, 'rgba(229, 211, 175, 0.32)');
+        gradient.addColorStop(0.55, 'rgba(121, 13, 22, 0.16)');
+        gradient.addColorStop(1, 'rgba(19, 7, 9, 0.0)');
+    }
 
     chartInstance = new Chart(ctx, {
         type: 'line',
@@ -142,62 +188,128 @@ function renderCharts(timeSeries) {
             datasets: [{
                 label: 'Share of Voice (%)',
                 data: datasetData,
-                borderColor: '#6366f1',
-                backgroundColor: 'rgba(99, 102, 241, 0.12)',
-                borderWidth: 2.5,
+                borderColor: lineColor,
+                backgroundColor: gradient,
+                borderWidth: 2.75,
                 fill: true,
-                tension: 0.35,
-                pointBackgroundColor: '#818cf8',
-                pointRadius: 4
+                tension: 0.38,
+                pointBackgroundColor: pointBg,
+                pointBorderColor: pointBorder,
+                pointBorderWidth: 2,
+                pointRadius: 4.5,
+                pointHoverRadius: 6.5,
+                pointHoverBackgroundColor: lineColor,
+                pointHoverBorderColor: '#FFFFFF',
+                pointHoverBorderWidth: 2
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
             scales: {
                 y: {
                     beginAtZero: true,
                     max: 100,
-                    grid: { color: '#334155' },
-                    ticks: { color: '#94a3b8' }
+                    grid: { color: gridColor, drawBorder: false },
+                    ticks: { 
+                        color: ticksColor,
+                        font: { family: "'Outfit', sans-serif", size: 12 },
+                        callback: value => value + '%'
+                    }
                 },
                 x: {
-                    grid: { color: '#334155' },
-                    ticks: { color: '#94a3b8' }
+                    grid: { color: gridColor, drawBorder: false },
+                    ticks: { 
+                        color: ticksColor,
+                        font: { family: "'Outfit', sans-serif", size: 12 }
+                    }
                 }
             },
             plugins: {
                 legend: {
-                    labels: { color: '#f8fafc', font: { family: "'Outfit', sans-serif" } }
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: isLight ? '#240F12' : '#F5EFE1',
+                    titleColor: isLight ? '#E5D3AF' : '#240F12',
+                    bodyColor: isLight ? '#FFFFFF' : '#130709',
+                    borderColor: isLight ? '#790D16' : '#E5D3AF',
+                    borderWidth: 1.2,
+                    padding: 10,
+                    boxPadding: 6,
+                    cornerRadius: 8,
+                    titleFont: { family: "'Outfit', sans-serif", size: 12, weight: '600' },
+                    bodyFont: { family: "'Outfit', sans-serif", size: 13, weight: '500' },
+                    callbacks: {
+                        label: function(context) {
+                            return ` Share of Voice: ${context.parsed.y}%`;
+                        }
+                    }
                 }
             }
         }
     });
 }
 
-// Render engine breakdown cards
+// Render engine breakdown cards with progress bars and badges
 function renderEngineBreakdown(breakdown) {
     const container = document.getElementById("engine-breakdown-container");
     if (!container) return;
     container.innerHTML = "";
+
+    const engineIcons = {
+        "Perplexity": '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="M12 3v18M3 12h18"></path></svg>',
+        "ChatGPT Search": '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 1 10 10c0 4.418-2.865 8.166-6.839 9.49"></path><circle cx="12" cy="12" r="4"></circle></svg>',
+        "Google AI Overviews": '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path><polyline points="21 3 21 9 15 9"></polyline></svg>',
+        "Claude": '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"></rect><path d="M8 12h8M12 8v8"></path></svg>',
+        "Gemini": '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15 9 22 12 15 15 12 22 9 15 2 12 9 9 12 2"></polygon></svg>'
+    };
 
     for (const [engine, stats] of Object.entries(breakdown || {})) {
         const card = document.createElement("div");
         card.className = "engine-card";
 
         const isGood = stats.sov > 50;
+        const iconSvg = engineIcons[engine] || '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle></svg>';
 
         card.innerHTML = `
             <div class="engine-title-flex">
-                <span class="engine-name">${escapeHtml(engine)}</span>
-                <span class="badge ${isGood ? 'badge-brand' : 'badge-general'}">${isGood ? 'Optimal' : 'Low Visibility'}</span>
+                <div class="engine-identity">
+                    <span class="engine-icon-badge">${iconSvg}</span>
+                    <span class="engine-name">${escapeHtml(engine)}</span>
+                </div>
+                <span class="badge ${isGood ? 'badge-brand' : 'badge-general'}">${isGood ? 'Strong' : 'Low'}</span>
             </div>
-            <p class="engine-metric-label">Share of Voice</p>
-            <p class="engine-metric-value ${isGood ? '' : 'neutral'}">${stats.sov}%</p>
-            <p class="engine-metric-label mt-2">Sentiment Score</p>
-            <p class="engine-metric-value" style="color: #38bdf8">${stats.positive_sentiment_pct}% Positive</p>
-            <p class="engine-metric-label mt-2">Logs Collected</p>
-            <p class="engine-metric-value" style="color: #94a3b8">${stats.total_queries} queries</p>
+            
+            <div class="engine-stats-body">
+                <div class="stat-block">
+                    <div class="stat-row">
+                        <span class="engine-metric-label">Share of Voice</span>
+                        <span class="engine-metric-value ${isGood ? '' : 'neutral'}">${stats.sov}%</span>
+                    </div>
+                    <div class="progress-bar-wrap">
+                        <div class="progress-bar-fill" style="width: ${Math.min(stats.sov, 100)}%;"></div>
+                    </div>
+                </div>
+
+                <div class="stat-block">
+                    <div class="stat-row">
+                        <span class="engine-metric-label">Positive Sentiment</span>
+                        <span class="engine-metric-value sentiment-metric">${stats.positive_sentiment_pct}%</span>
+                    </div>
+                    <div class="progress-bar-wrap">
+                        <div class="progress-bar-fill sentiment-fill" style="width: ${Math.min(stats.positive_sentiment_pct, 100)}%;"></div>
+                    </div>
+                </div>
+
+                <div class="engine-card-footer">
+                    <span class="query-count-pill">${stats.total_queries} queries analyzed</span>
+                </div>
+            </div>
         `;
         container.appendChild(card);
     }
@@ -216,19 +328,32 @@ async function loadPromptsTable() {
         tbody.innerHTML = "";
         
         if (!prompts || prompts.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" class="empty-state-cell">No prompts currently monitored. Register a new query on the left to start tracking.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="4" class="empty-state-cell">No queries currently tracked. Add a query to start monitoring.</td></tr>`;
             return;
         }
 
         prompts.forEach(p => {
             const tr = document.createElement("tr");
+            let catClass = 'badge-cat';
+            if (p.category === 'Commercial') catClass = 'badge-general';
+            else if (p.category === 'Brand Comparison') catClass = 'badge-brand';
+            else catClass = 'badge-competitor';
+
             tr.innerHTML = `
                 <td><strong>${escapeHtml(p.query_text)}</strong></td>
-                <td><span class="badge badge-cat">${escapeHtml(p.category)}</span></td>
-                <td>${p.frequency_hours} hours</td>
+                <td><span class="badge ${catClass}">${escapeHtml(p.category)}</span></td>
+                <td><span class="interval-pill">${p.frequency_hours}h interval</span></td>
                 <td>
-                    <button class="btn btn-action" onclick="runPromptNow(${p.id})">Run Now</button>
-                    <button class="btn btn-danger" onclick="deletePrompt(${p.id})">Delete</button>
+                    <div class="row-actions">
+                        <button class="btn btn-action" onclick="runPromptNow(${p.id})" title="Check query now">
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            <span>Run</span>
+                        </button>
+                        <button class="btn btn-danger" onclick="deletePrompt(${p.id})" title="Delete query">
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                            <span>Delete</span>
+                        </button>
+                    </div>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -260,50 +385,50 @@ async function handleAddPrompt(event) {
 
         if (!response.ok) {
             const errData = await response.json();
-            showToast(errData.detail || "Failed to register new prompt query", "error");
+            showToast(errData.detail || "Failed to add query", "error");
             return;
         }
 
         queryInput.value = "";
-        showToast("New prompt registered! Tracking jobs launched across engines.", "success");
+        showToast("Query added successfully", "success");
         await refreshData();
     } catch (err) {
         console.error(err);
-        showToast("Error registering prompt query", "error");
+        showToast("Error adding query", "error");
     }
 }
 
 // Run single prompt trigger
 async function runPromptNow(id) {
     try {
-        showToast("Launching tracking runs across engines...", "info");
+        showToast("Checking query across engines...", "info");
         const response = await fetch(`${API_BASE}/prompts/${id}/run`, { method: 'POST' });
         if (response.ok) {
-            showToast("Tracking snapshot completed!", "success");
+            showToast("Check completed", "success");
             setTimeout(refreshData, 1200);
         } else {
-            showToast("Failed to run prompt tracking job.", "error");
+            showToast("Failed to run check", "error");
         }
     } catch (err) {
         console.error(err);
-        showToast("Error triggering prompt execution", "error");
+        showToast("Error running query", "error");
     }
 }
 
 // Delete prompt handler
 async function deletePrompt(id) {
-    if (!confirm("Are you sure you want to stop tracking this prompt query?")) return;
+    if (!confirm("Are you sure you want to delete this query?")) return;
     try {
         const response = await fetch(`${API_BASE}/prompts/${id}`, { method: 'DELETE' });
         if (response.ok) {
-            showToast("Prompt query deleted successfully", "info");
+            showToast("Query deleted", "info");
             await refreshData();
         } else {
-            showToast("Failed to delete prompt query", "error");
+            showToast("Failed to delete query", "error");
         }
     } catch (err) {
         console.error(err);
-        showToast("Error deleting prompt", "error");
+        showToast("Error deleting query", "error");
     }
 }
 
@@ -323,7 +448,7 @@ function renderCitationsTable(citations) {
         const isCompetitor = Boolean(c.is_competitor);
 
         if (c.is_brand) {
-            typeBadge = '<span class="badge badge-brand">Target Brand</span>';
+            typeBadge = '<span class="badge badge-brand">Brand Domain</span>';
         } else if (isCompetitor) {
             typeBadge = '<span class="badge badge-competitor">Competitor</span>';
         }
@@ -335,9 +460,14 @@ function renderCitationsTable(citations) {
         renderedCount++;
         const tr = document.createElement("tr");
         tr.innerHTML = `
-            <td><a href="${c.url}" target="_blank" rel="noopener noreferrer" style="color: #818cf8; text-decoration: none;">${escapeHtml(c.url)}</a></td>
-            <td><strong>${escapeHtml(c.domain)}</strong></td>
-            <td>Rank ${c.rank}</td>
+            <td>
+                <a href="${c.url}" target="_blank" rel="noopener noreferrer" class="citation-link" title="${escapeHtml(c.url)}">
+                    <span class="url-text">${escapeHtml(c.url)}</span>
+                    <svg class="external-icon" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                </a>
+            </td>
+            <td><span class="domain-tag">${escapeHtml(c.domain)}</span></td>
+            <td><span class="rank-pill">#${c.rank}</span></td>
             <td>${typeBadge}</td>
         `;
         tbody.appendChild(tr);
@@ -406,19 +536,20 @@ async function handleUpdateSettings(event) {
             })
         });
         if (res.ok) {
-            showToast("Settings and competitor targets saved successfully!", "success");
+            showToast("Settings saved successfully", "success");
             await refreshData();
         } else {
-            showToast("Failed to save configuration settings", "error");
+            showToast("Failed to save settings", "error");
         }
     } catch (err) {
         console.error(err);
-        showToast("Error updating configuration settings", "error");
+        showToast("Error saving settings", "error");
     }
 }
 
 // Initial boot
 window.addEventListener("DOMContentLoaded", () => {
+    initTheme();
     refreshData();
     loadSettings();
 });

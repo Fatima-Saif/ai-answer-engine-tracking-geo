@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3.3">
 </head>
 <body>
     <div id="sidebar-backdrop" class="sidebar-backdrop" onclick="toggleSidebar(false)"></div>
@@ -17,27 +17,35 @@
         <!-- Sidebar Navigation -->
         <aside class="sidebar" id="app-sidebar">
             <div class="brand">
-                <span class="logo-icon">
-                    <svg class="brand-svg" viewBox="0 0 28 28" fill="none" width="26" height="26">
-                        <path d="M14 2L3 8L14 26L25 8L14 2Z" stroke="url(#ff-grad)" stroke-width="2.2" stroke-linejoin="round"/>
-                        <path d="M14 6L7 10L14 21L21 10L14 6Z" fill="url(#ff-glow)" fill-opacity="0.3"/>
-                        <circle cx="14" cy="13" r="2" fill="#38bdf8"/>
-                        <defs>
-                            <linearGradient id="ff-grad" x1="3" y1="2" x2="25" y2="26" gradientUnits="userSpaceOnUse">
-                                <stop stop-color="#6366f1"/>
-                                <stop offset="0.5" stop-color="#38bdf8"/>
-                                <stop offset="1" stop-color="#10b981"/>
-                            </linearGradient>
-                            <linearGradient id="ff-glow" x1="7" y1="6" x2="21" y2="21" gradientUnits="userSpaceOnUse">
-                                <stop stop-color="#818cf8"/>
-                                <stop offset="1" stop-color="#34d399"/>
-                            </linearGradient>
-                        </defs>
-                    </svg>
-                </span>
-                <div class="brand-text">
-                    <h2>AI Answer Engine Tracking (GEO)</h2>
+                <div class="brand-identity">
+                    <span class="logo-icon">
+                        <svg class="brand-svg" viewBox="0 0 28 28" fill="none" width="26" height="26">
+                            <path d="M14 2L3 8L14 26L25 8L14 2Z" stroke="url(#ff-grad)" stroke-width="2.2" stroke-linejoin="round"/>
+                            <path d="M14 6L7 10L14 21L21 10L14 6Z" fill="url(#ff-glow)" fill-opacity="0.35"/>
+                            <circle cx="14" cy="13" r="2" fill="#E5D3AF"/>
+                            <defs>
+                                <linearGradient id="ff-grad" x1="3" y1="2" x2="25" y2="26" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#790D16"/>
+                                    <stop offset="0.55" stop-color="#E5D3AF"/>
+                                    <stop offset="1" stop-color="#AEC4D4"/>
+                                </linearGradient>
+                                <linearGradient id="ff-glow" x1="7" y1="6" x2="21" y2="21" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#790D16"/>
+                                    <stop offset="1" stop-color="#E5D3AF"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </span>
+                    <div class="brand-text">
+                        <h2>AI Answer Engine Tracking (GEO)</h2>
+                    </div>
                 </div>
+                <button class="sidebar-close-btn" onclick="toggleSidebar(false)" aria-label="Close sidebar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
             </div>
             <nav class="nav-links">
                 <a href="#dashboard" class="nav-item active" onclick="switchTab('dashboard'); toggleSidebar(false);">
@@ -50,7 +58,7 @@
                     <span class="nav-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
                     </span>
-                    Prompts Matrix
+                    Tracked Queries
                 </a>
                 <a href="#citations" class="nav-item" onclick="switchTab('citations'); toggleSidebar(false);">
                     <span class="nav-icon">
@@ -70,7 +78,7 @@
                     <span class="powered-text">Powered by</span>
                     <span class="powered-brand">
                         <svg class="powered-icon-svg" viewBox="0 0 16 16" fill="none" width="13" height="13">
-                            <polygon points="8,1 15,15 1,15" stroke="#818cf8" stroke-width="1.8" fill="rgba(99, 102, 241, 0.25)" stroke-linejoin="round"/>
+                            <polygon points="8,1 15,15 1,15" stroke="#E5D3AF" stroke-width="1.8" fill="rgba(229, 211, 175, 0.25)" stroke-linejoin="round"/>
                         </svg>
                         FalconFace
                     </span>
@@ -92,10 +100,31 @@
                     </button>
                     <div class="header-title">
                         <h1 id="page-title">AI Answer Engine Tracking (GEO)</h1>
-                        <p class="subtitle">Track Your Brand. Measure AI Visibility. Understand Every Citation. • <span class="header-powered">Powered by FalconFace</span></p>
+                        <p class="subtitle">Search engine visibility and citation monitoring • <span class="header-powered">Powered by FalconFace</span></p>
                     </div>
                 </div>
                 <div class="header-actions">
+                    <button class="btn btn-theme-toggle" id="btn-theme-toggle" onclick="toggleTheme()" aria-label="Toggle Light and Dark Mode">
+                        <span class="btn-icon theme-icon-sun">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                                <circle cx="12" cy="12" r="5"></circle>
+                                <line x1="12" y1="1" x2="12" y2="3"></line>
+                                <line x1="12" y1="21" x2="12" y2="23"></line>
+                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                <line x1="1" y1="12" x2="3" y2="12"></line>
+                                <line x1="21" y1="12" x2="23" y2="12"></line>
+                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                            </svg>
+                        </span>
+                        <span class="btn-icon theme-icon-moon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                            </svg>
+                        </span>
+                        <span id="theme-toggle-text">Dark Mode</span>
+                    </button>
                     <button class="btn btn-primary" id="btn-refresh" onclick="refreshData()">
                         <span class="btn-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
@@ -113,50 +142,63 @@
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-header">
-                            <span class="metric-label">Monitored Prompts</span>
+                            <span class="metric-label">Tracked Queries</span>
                             <span class="metric-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                             </span>
                         </div>
-                        <div class="metric-value" id="metric-total-prompts">0</div>
-                        <p class="metric-footer">Across all target search intent profiles</p>
+                        <div class="metric-value-wrap">
+                            <div class="metric-value" id="metric-total-prompts">0</div>
+                        </div>
+                        <p class="metric-footer">Active search queries</p>
                     </div>
                     <div class="metric-card highlight">
                         <div class="metric-header">
-                            <span class="metric-label">Brand Share of Voice</span>
+                            <span class="metric-label">Share of Voice</span>
                             <span class="metric-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
                             </span>
                         </div>
-                        <div class="metric-value"><span id="metric-sov">0</span>%</div>
-                        <p class="metric-footer">Total engine citation index mentions</p>
+                        <div class="metric-value-wrap">
+                            <div class="metric-value"><span id="metric-sov">0</span>%</div>
+                        </div>
+                        <p class="metric-footer">Brand mentions across all engines</p>
                     </div>
                     <div class="metric-card">
                         <div class="metric-header">
-                            <span class="metric-label">Citations Captured</span>
+                            <span class="metric-label">Total Citations</span>
                             <span class="metric-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
                             </span>
                         </div>
-                        <div class="metric-value" id="metric-citations">0</div>
-                        <p class="metric-footer">Extracted reference hyperlinks</p>
+                        <div class="metric-value-wrap">
+                            <div class="metric-value" id="metric-citations">0</div>
+                        </div>
+                        <p class="metric-footer">Source links citing your domain</p>
                     </div>
                     <div class="metric-card warning">
                         <div class="metric-header">
-                            <span class="metric-label">Visibility Gap Index</span>
+                            <span class="metric-label">Visibility Gap</span>
                             <span class="metric-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                             </span>
                         </div>
-                        <div class="metric-value"><span id="metric-gap">0</span>%</div>
-                        <p class="metric-footer">Missing engine visibility market share</p>
+                        <div class="metric-value-wrap">
+                            <div class="metric-value"><span id="metric-gap">0</span>%</div>
+                        </div>
+                        <p class="metric-footer">Queries without brand mention</p>
                     </div>
                 </div>
 
                 <!-- Primary Chart & Engines Section -->
                 <div class="dashboard-body">
                     <div class="chart-container">
-                        <h3>Brand Mention Frequency Over Time</h3>
+                        <div class="chart-top-bar">
+                            <div class="chart-title-area">
+                                <h3>Share of Voice Over Time</h3>
+                                <p class="chart-subtitle">Daily brand mention frequency across monitored queries</p>
+                            </div>
+                        </div>
                         <div class="chart-wrapper">
                             <canvas id="sovChart"></canvas>
                         </div>
@@ -175,11 +217,11 @@
                 <div class="manager-layout">
                     <!-- Form Card -->
                     <div class="card form-card">
-                        <h3>Add Tracking Query</h3>
+                        <h3>Add Query</h3>
                         <form id="add-prompt-form" onsubmit="handleAddPrompt(event)">
                             <div class="form-group">
-                                <label for="query_text">Search Prompt / Query</label>
-                                <input type="text" id="query_text" required placeholder="e.g., Best code automation platform">
+                                <label for="query_text">Search Query</label>
+                                <input type="text" id="query_text" required placeholder="e.g., Best CRM software for startups">
                             </div>
                             <div class="form-group">
                                 <label for="category">Category</label>
@@ -190,25 +232,25 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="frequency">Frequency (Hours)</label>
+                                <label for="frequency">Check Frequency</label>
                                 <select id="frequency">
                                     <option value="1">Every Hour</option>
                                     <option value="12">Every 12 Hours</option>
                                     <option value="24" selected>Every 24 Hours</option>
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-accent btn-full">Register Query</button>
+                            <button type="submit" class="btn btn-accent btn-full">Add Query</button>
                         </form>
                     </div>
 
                     <!-- Table Card -->
                     <div class="card table-card">
-                        <h3>Tracked Queries Matrix</h3>
+                        <h3>Tracked Queries</h3>
                         <div class="table-responsive">
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Query Text</th>
+                                        <th>Query</th>
                                         <th>Category</th>
                                         <th>Interval</th>
                                         <th>Actions</th>
@@ -227,12 +269,12 @@
             <section id="tab-citations" class="tab-view">
                 <div class="card">
                     <div class="table-header-flex">
-                        <h3>Citation Deep-Dive Audit</h3>
+                        <h3>Citation Audit</h3>
                         <div class="filter-group">
-                            <label for="citation-filter">Filter Domain Type:</label>
+                            <label for="citation-filter">Domain Type:</label>
                             <select id="citation-filter" onchange="filterCitations()">
                                 <option value="all">All Domains</option>
-                                <option value="brand">Target Brand Domain</option>
+                                <option value="brand">Brand Domain</option>
                                 <option value="competitor">Competitor Domains</option>
                             </select>
                         </div>
@@ -243,7 +285,7 @@
                                 <tr>
                                     <th>Citing URL</th>
                                     <th>Base Domain</th>
-                                    <th>Structural Rank</th>
+                                    <th>Rank</th>
                                     <th>Type</th>
                                 </tr>
                             </thead>
@@ -258,8 +300,8 @@
             <!-- Settings Manager View -->
             <section id="tab-settings" class="tab-view">
                 <div class="card" style="max-width: 600px;">
-                    <h3>System Configurations</h3>
-                    <p class="subtitle" style="margin-bottom: 1.5rem;">Update the corporate brand and target domain properties for the monitoring crawler.</p>
+                    <h3>Project Settings</h3>
+                    <p class="subtitle" style="margin-bottom: 1.5rem;">Configure your brand name, domain, and competitor domains.</p>
                     <form id="settings-form" onsubmit="handleUpdateSettings(event)">
                         <div class="form-group">
                             <label for="settings_brand_name">Brand Name</label>
@@ -277,7 +319,7 @@
                             <label for="settings_competitors">Competitor Domains (comma-separated)</label>
                             <input type="text" id="settings_competitors" placeholder="e.g., globexcorp.com, initech.com, hooli.com">
                         </div>
-                        <button type="submit" class="btn btn-accent">Save Configurations</button>
+                        <button type="submit" class="btn btn-accent">Save Settings</button>
                     </form>
                 </div>
             </section>
@@ -285,6 +327,6 @@
     </div>
     <!-- Non-blocking Toast Notification Container -->
     <div id="toast-container" class="toast-container"></div>
-    <script src="app.js"></script>
+    <script src="app.js?v=3.3"></script>
 </body>
 </html>
