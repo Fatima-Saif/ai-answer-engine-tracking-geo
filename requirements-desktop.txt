@@ -1,0 +1,5 @@
+# Inherit production web dependencies
+-r requirements.txt
+
+# Desktop GUI Windowing wrapper
+pywebview>=4.0.0

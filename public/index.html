@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Answer Engine Tracking (GEO)</title>
+    <!-- Google Fonts: Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="sidebar-backdrop" class="sidebar-backdrop" onclick="toggleSidebar(false)"></div>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="app-sidebar">
+            <div class="brand">
+                <span class="logo-icon">▲</span>
+                <div class="brand-text">
+                    <h2>AI Answer Engine Tracking (GEO)</h2>
+                </div>
+            </div>
+            <nav class="nav-links">
+                <a href="#dashboard" class="nav-item active" onclick="switchTab('dashboard'); toggleSidebar(false);">
+                    <span class="nav-icon">📊</span> Dashboard
+                </a>
+                <a href="#prompts" class="nav-item" onclick="switchTab('prompts'); toggleSidebar(false);">
+                    <span class="nav-icon">🔑</span> Prompts Matrix
+                </a>
+                <a href="#citations" class="nav-item" onclick="switchTab('citations'); toggleSidebar(false);">
+                    <span class="nav-icon">🔗</span> Citation Audit
+                </a>
+                <a href="#settings" class="nav-item" onclick="switchTab('settings'); toggleSidebar(false);">
+                    <span class="nav-icon">⚙️</span> Settings
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="target-config">
+                    <p class="config-label">Target Brand</p>
+                    <p class="config-value" id="target-brand-name">FalconFace</p>
+                    <p class="config-label mt-2">Target Domain</p>
+                    <p class="config-value" id="target-domain-name">falconface.ai</p>
+                </div>
+                <div class="powered-by-badge">
+                    <span class="powered-text">Powered by</span>
+                    <span class="powered-brand">🦅 FalconFace</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="app-header">
+                <div class="header-left">
+                    <button class="mobile-toggle-btn" onclick="toggleSidebar(true)" aria-label="Toggle Navigation">☰</button>
+                    <div class="header-title">
+                        <h1 id="page-title">AI Answer Engine Tracking (GEO)</h1>
+                        <p class="subtitle">Track Your Brand. Measure AI Visibility. Understand Every Citation. • <span class="header-powered">Powered by FalconFace</span></p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="btn-refresh" onclick="refreshData()">
+                        <span class="btn-icon">🔄</span> Refresh Data
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard View -->
+            <section id="tab-dashboard" class="tab-view active">
+                <!-- Metrics Grid -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span class="metric-label">Monitored Prompts</span>
+                            <span class="metric-icon">🔍</span>
+                        </div>
+                        <div class="metric-value" id="metric-total-prompts">0</div>
+                        <p class="metric-footer">Across all target search intent profiles</p>
+                    </div>
+                    <div class="metric-card highlight">
+                        <div class="metric-header">
+                            <span class="metric-label">Brand Share of Voice</span>
+                            <span class="metric-icon">📢</span>
+                        </div>
+                        <div class="metric-value"><span id="metric-sov">0</span>%</div>
+                        <p class="metric-footer">Total engine citation index mentions</p>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span class="metric-label">Citations Captured</span>
+                            <span class="metric-icon">🔗</span>
+                        </div>
+                        <div class="metric-value" id="metric-citations">0</div>
+                        <p class="metric-footer">Extracted reference hyperlinks</p>
+                    </div>
+                    <div class="metric-card warning">
+                        <div class="metric-header">
+                            <span class="metric-label">Visibility Gap Index</span>
+                            <span class="metric-icon">⚠️</span>
+                        </div>
+                        <div class="metric-value"><span id="metric-gap">0</span>%</div>
+                        <p class="metric-footer">Missing engine visibility market share</p>
+                    </div>
+                </div>
+
+                <!-- Primary Chart & Engines Section -->
+                <div class="dashboard-body">
+                    <div class="chart-container">
+                        <h3>Brand Mention Frequency Over Time</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="sovChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Engine Breakdown cards -->
+                <h3 class="section-title">Engine Visibility Breakdown</h3>
+                <div class="engines-grid" id="engine-breakdown-container">
+                    <!-- Cards will be dynamically inserted here -->
+                </div>
+            </section>
+
+            <!-- Prompts Manager View -->
+            <section id="tab-prompts" class="tab-view">
+                <div class="manager-layout">
+                    <!-- Form Card -->
+                    <div class="card form-card">
+                        <h3>Add Tracking Query</h3>
+                        <form id="add-prompt-form" onsubmit="handleAddPrompt(event)">
+                            <div class="form-group">
+                                <label for="query_text">Search Prompt / Query</label>
+                                <input type="text" id="query_text" required placeholder="e.g., Best code automation platform">
+                            </div>
+                            <div class="form-group">
+                                <label for="category">Category</label>
+                                <select id="category">
+                                    <option value="Informational">Informational</option>
+                                    <option value="Commercial">Commercial</option>
+                                    <option value="Brand Comparison">Brand Comparison</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="frequency">Frequency (Hours)</label>
+                                <select id="frequency">
+                                    <option value="1">Every Hour</option>
+                                    <option value="12">Every 12 Hours</option>
+                                    <option value="24" selected>Every 24 Hours</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-accent btn-full">Register Query</button>
+                        </form>
+                    </div>
+
+                    <!-- Table Card -->
+                    <div class="card table-card">
+                        <h3>Tracked Queries Matrix</h3>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Query Text</th>
+                                        <th>Category</th>
+                                        <th>Interval</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="prompts-table-body">
+                                    <!-- Dynamic Rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Citation Audit View -->
+            <section id="tab-citations" class="tab-view">
+                <div class="card">
+                    <div class="table-header-flex">
+                        <h3>Citation Deep-Dive Audit</h3>
+                        <div class="filter-group">
+                            <label for="citation-filter">Filter Domain Type:</label>
+                            <select id="citation-filter" onchange="filterCitations()">
+                                <option value="all">All Domains</option>
+                                <option value="brand">Target Brand Domain</option>
+                                <option value="competitor">Competitor Domains</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Citing URL</th>
+                                    <th>Base Domain</th>
+                                    <th>Structural Rank</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody id="citations-table-body">
+                                <!-- Dynamic Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Manager View -->
+            <section id="tab-settings" class="tab-view">
+                <div class="card" style="max-width: 600px;">
+                    <h3>System Configurations</h3>
+                    <p class="subtitle" style="margin-bottom: 1.5rem;">Update the corporate brand and target domain properties for the monitoring crawler.</p>
+                    <form id="settings-form" onsubmit="handleUpdateSettings(event)">
+                        <div class="form-group">
+                            <label for="settings_brand_name">Brand Name</label>
+                            <input type="text" id="settings_brand_name" required placeholder="e.g., AcmeCorp">
+                        </div>
+                        <div class="form-group">
+                            <label for="settings_target_domain">Target Domain</label>
+                            <input type="text" id="settings_target_domain" required placeholder="e.g., acmecorp.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="settings_serp_api_key">SerpApi Key (Optional)</label>
+                            <input type="password" id="settings_serp_api_key" placeholder="e.g., your_serp_api_key_here">
+                        </div>
+                        <div class="form-group">
+                            <label for="settings_competitors">Competitor Domains (comma-separated)</label>
+                            <input type="text" id="settings_competitors" placeholder="e.g., globexcorp.com, initech.com, hooli.com">
+                        </div>
+                        <button type="submit" class="btn btn-accent">Save Configurations</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+    <!-- Non-blocking Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+    <script src="app.js"></script>
+</body>
+</html>
